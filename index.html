@@ -1020,13 +1020,23 @@
                     #FFFFFF 100%
                 );
             }
-            .cloud-puff--b1, .cloud-puff--b2, .cloud-puff--b3, .cloud-puff--b4, .cloud-puff--b5 { width: 98vw; }
-            .cloud-puff--m1, .cloud-puff--m2, .cloud-puff--m3, .cloud-puff--m4, .cloud-puff--m5 { width: 94vw; }
+            /* Desativa keyframes infinitos e camadas redundantes nas nuvens no mobile para economizar ~60MB de VRAM */
+            .cloud-puff img {
+                animation: none !important;
+                will-change: auto !important;
+            }
+            .cloud-puff--b3, .cloud-puff--b4, .cloud-puff--b5,
+            .cloud-puff--m3, .cloud-puff--m4, .cloud-puff--m5 {
+                display: none !important;
+            }
+            .cloud-puff--b1, .cloud-puff--b2 { width: 98vw; }
+            .cloud-puff--m1, .cloud-puff--m2 { width: 94vw; }
             .cloud-puff--f1, .cloud-puff--f2, .cloud-puff--f3, .cloud-puff--f4, .cloud-puff--f5 { width: 90vw; }
 
+            /* Altura estável no mobile (evita pulo ao recolher a barra de endereços no Chrome/Brave) */
             .hero {
-                height: 100vh; height: 100dvh;
-                min-height: 100vh; min-height: 100dvh;
+                height: 100svh;
+                min-height: 100svh;
                 padding: 0;
             }
             .hero-content {
@@ -1506,6 +1516,9 @@
             pointer-events: none;
             transition: none !important;
             z-index: 6;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
         .historia-photo-card {
@@ -1515,14 +1528,22 @@
             box-shadow: 0 20px 48px rgba(56, 61, 48, 0.15), 0 4px 12px rgba(0, 0, 0, 0.06);
             border: 1px solid rgba(107, 112, 92, 0.14);
             width: clamp(190px, 21vw, 285px);
-            transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease;
+            transition: box-shadow 0.4s ease;
             cursor: pointer;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
-        .historia-photo-card:hover {
-            transform: scale(1.05) !important;
-            box-shadow: 0 26px 65px rgba(56, 61, 48, 0.22), 0 6px 16px rgba(0, 0, 0, 0.08);
-            z-index: 10;
+        @media (hover: hover) and (pointer: fine) {
+            .historia-photo-card {
+                transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease;
+            }
+            .historia-photo-card:hover {
+                transform: scale(1.05) !important;
+                box-shadow: 0 26px 65px rgba(56, 61, 48, 0.22), 0 6px 16px rgba(0, 0, 0, 0.08);
+                z-index: 10;
+            }
         }
 
         .historia-photo-card img {
@@ -3091,22 +3112,22 @@
     <div class="hero-slider" id="hero-bg" aria-label="Slide de fotos do casal">
         <!-- 📸 FOTO 01 DO SLIDE HERO: Casal no gramado à beira do lago -->
         <div class="hero-slide is-active" data-slide="0">
-            <img src="img/hero-1.jpg" alt="Charles & Juliane - Foto 1" loading="eager">
+            <img src="img/hero-1.jpg" alt="Charles & Juliane - Foto 1" loading="eager" decoding="async">
         </div>
 
         <!-- 📸 FOTO 02 DO SLIDE HERO: Mãos entrelaçadas em meio às folhas -->
         <div class="hero-slide" data-slide="1">
-            <img src="img/hero-2.jpg" alt="Charles & Juliane - Foto 2" loading="eager">
+            <img src="img/hero-2.jpg" alt="Charles & Juliane - Foto 2" loading="eager" decoding="async">
         </div>
 
         <!-- 📸 FOTO 03 DO SLIDE HERO: Casal correndo no campo com montanhas -->
         <div class="hero-slide" data-slide="2">
-            <img src="img/hero-3.jpg" alt="Charles & Juliane - Foto 3" loading="eager">
+            <img src="img/hero-3.jpg" alt="Charles & Juliane - Foto 3" loading="eager" decoding="async">
         </div>
 
         <!-- 📸 FOTO 04 DO SLIDE HERO: Casal correndo no pôr do sol -->
         <div class="hero-slide" data-slide="3">
-            <img src="img/hero-4.jpg" alt="Charles & Juliane - Foto 4" loading="eager">
+            <img src="img/hero-4.jpg" alt="Charles & Juliane - Foto 4" loading="eager" decoding="async">
         </div>
 
         <!-- Delicate Editorial Light Overlay (Garante contraste e legibilidade impecável das escritas) -->
@@ -3258,7 +3279,7 @@
             <!-- 📸 FOTO 01: Primeira foto -->
             <div class="historia-photo-item" data-index="0">
                 <div class="historia-photo-card">
-                    <img src="img/historia-1.jpg?v=2" alt="Charles & Juliane - Primeira foto" loading="eager">
+                    <img src="img/historia-1.jpg?v=2" alt="Charles & Juliane - Primeira foto" loading="eager" decoding="async">
                     <div class="historia-photo-caption">Primeira foto</div>
                 </div>
             </div>
@@ -3266,7 +3287,7 @@
             <!-- 📸 FOTO 02: 2020 -->
             <div class="historia-photo-item" data-index="1">
                 <div class="historia-photo-card">
-                    <img src="img/historia-2.jpg?v=2" alt="Charles & Juliane - 2020" loading="eager">
+                    <img src="img/historia-2.jpg?v=2" alt="Charles & Juliane - 2020" loading="eager" decoding="async">
                     <div class="historia-photo-caption">2020</div>
                 </div>
             </div>
@@ -3274,7 +3295,7 @@
             <!-- 📸 FOTO 03: 2021 -->
             <div class="historia-photo-item" data-index="2">
                 <div class="historia-photo-card">
-                    <img src="img/historia-3.jpg?v=2" alt="Charles & Juliane - 2021" loading="eager">
+                    <img src="img/historia-3.jpg?v=2" alt="Charles & Juliane - 2021" loading="eager" decoding="async">
                     <div class="historia-photo-caption">2021</div>
                 </div>
             </div>
@@ -3282,7 +3303,7 @@
             <!-- 📸 FOTO 04: 2022 -->
             <div class="historia-photo-item" data-index="3">
                 <div class="historia-photo-card">
-                    <img src="img/historia-4.jpg?v=2" alt="Charles & Juliane - 2022" loading="eager">
+                    <img src="img/historia-4.jpg?v=2" alt="Charles & Juliane - 2022" loading="eager" decoding="async">
                     <div class="historia-photo-caption">2022</div>
                 </div>
             </div>
@@ -3290,7 +3311,7 @@
             <!-- 📸 FOTO 05: 2023 -->
             <div class="historia-photo-item" data-index="4">
                 <div class="historia-photo-card">
-                    <img src="img/historia-5.jpg?v=2" alt="Charles & Juliane - 2023" loading="eager">
+                    <img src="img/historia-5.jpg?v=2" alt="Charles & Juliane - 2023" loading="eager" decoding="async">
                     <div class="historia-photo-caption">2023</div>
                 </div>
             </div>
@@ -3298,7 +3319,7 @@
             <!-- 📸 FOTO 06: 2024 -->
             <div class="historia-photo-item" data-index="5">
                 <div class="historia-photo-card">
-                    <img src="img/historia-6.jpg?v=1" alt="Charles & Juliane - 2024" loading="eager">
+                    <img src="img/historia-6.jpg?v=1" alt="Charles & Juliane - 2024" loading="eager" decoding="async">
                     <div class="historia-photo-caption">2024</div>
                 </div>
             </div>
@@ -3306,7 +3327,7 @@
             <!-- 📸 FOTO 07: O Pedido (Trava, cresce e preenche a tela) -->
             <div class="historia-photo-item historia-photo-item--pedido" data-index="6" id="historiaPedidoItem">
                 <div class="historia-photo-card" id="historiaPedidoCard">
-                    <img src="img/historia-7.jpg?v=2" alt="Charles & Juliane - O Pedido" id="historiaPedidoImg" loading="eager">
+                    <img src="img/historia-7.jpg?v=2" alt="Charles & Juliane - O Pedido" id="historiaPedidoImg" loading="eager" decoding="async">
                     <div class="historia-photo-caption" id="historiaPedidoCaption">O Pedido</div>
                 </div>
             </div>
@@ -4468,34 +4489,316 @@
         }
     }
 
-    // Initialize Save the Date and Cards immediately
+    /* ═══════════════════════════════════════
+       NOSSA HISTÓRIA — PINNED MEMORIES CONTROLLER (ALTERNATING LATERAL MEMORIES + O PEDIDO FULLSCREEN CLIMAX)
+    ═══════════════════════════════════════ */
+    const historiaPin = document.getElementById('historia');
+    const photoItems = document.querySelectorAll('.historia-photo-item');
+    const historiaCenterContent = document.querySelector('.historia-center-content');
+    const historiaPedidoOverlay = document.getElementById('historiaPedidoOverlay');
+    const historiaPedidoItem = document.getElementById('historiaPedidoItem');
+    const historiaPedidoCard = document.getElementById('historiaPedidoCard');
+    const historiaPedidoImg = document.getElementById('historiaPedidoImg');
+    const historiaPedidoCaption = document.getElementById('historiaPedidoCaption');
+
+    // 6 Primeiras fotos alternando lateralmente (Direita -> Esquerda ...)
+    const historiaStandardEpisodes = [
+        // 01 • Primeira foto (Direita)
+        { side: 'right', startProgress: 0.01, endProgress: 0.18, rot: 3.5 },
+        // 02 • 2020 (Esquerda)
+        { side: 'left',  startProgress: 0.08, endProgress: 0.25, rot: -3.5 },
+        // 03 • 2021 (Direita)
+        { side: 'right', startProgress: 0.15, endProgress: 0.32, rot: 3.0 },
+        // 04 • 2022 (Esquerda)
+        { side: 'left',  startProgress: 0.22, endProgress: 0.39, rot: -3.0 },
+        // 05 • 2023 (Direita)
+        { side: 'right', startProgress: 0.29, endProgress: 0.46, rot: 2.5 },
+        // 06 • 2024 (Esquerda)
+        { side: 'left',  startProgress: 0.36, endProgress: 0.53, rot: -3.0 }
+    ];
+
+    let pedidoCurrentState = -1; // -1: hidden, 0: entering, 1: growing, 2: full
+
+    function updateHistoriaPhotos(progress) {
+        if (!photoItems.length) return;
+        const vw = metrics.vw;
+        const vh = metrics.vh;
+        const isMobile = metrics.isMobile;
+        const cardW = metrics.cardW;
+        const cardH = metrics.cardH;
+
+        // 1. ATUALIZA AS 6 FOTOS INICIAIS (0 a 5)
+        for (let idx = 0; idx < historiaStandardEpisodes.length; idx++) {
+            const episode = historiaStandardEpisodes[idx];
+            const item = photoItems[idx];
+            if (!item) continue;
+
+            if (progress < episode.startProgress || progress > episode.endProgress) {
+                if (item.style.opacity !== '0') {
+                    item.style.opacity = '0';
+                    item.style.pointerEvents = 'none';
+                }
+                continue;
+            }
+
+            // Progresso local da foto de 0 a 1 durante sua janela de subida
+            const t = (progress - episode.startProgress) / (episode.endProgress - episode.startProgress);
+
+            let posX = 0;
+            if (isMobile) {
+                const marginM = Math.max(vw * 0.03, 10);
+                posX = episode.side === 'left' ? marginM : Math.max(vw - cardW - marginM, marginM);
+            } else {
+                const marginD = Math.min(Math.max(vw * 0.065, 40), 140);
+                posX = episode.side === 'left' ? marginD : (vw - cardW - marginD);
+            }
+
+            const startY = vh + 25;
+            const endY = -cardH - 30;
+            const posY = startY + (endY - startY) * t;
+
+            let opacity = 1;
+            if (t < 0.15) {
+                opacity = t / 0.15;
+            } else if (t > 0.85) {
+                opacity = (1 - t) / 0.15;
+            }
+
+            item.style.opacity = opacity.toFixed(3);
+            item.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) rotate(${episode.rot.toFixed(1)}deg)`;
+            item.style.pointerEvents = opacity > 0.4 ? 'auto' : 'none';
+        }
+
+        // 2. ATUALIZA A 7ª FOTO: O PEDIDO (TRAVA, CRESCE E PREENCHE A TELA)
+        const pedidoItem = historiaPedidoItem || photoItems[6];
+        if (pedidoItem) {
+            const pStart = 0.44;  // Começa a subir
+            const pLock  = 0.62;  // Atinge o centro e trava
+            const pFull  = 0.82;  // Conclui expansão em tela cheia (100% preenchida)
+
+            if (progress < pStart) {
+                if (pedidoCurrentState !== -1) {
+                    pedidoCurrentState = -1;
+                    pedidoItem.style.opacity = '0';
+                    pedidoItem.style.pointerEvents = 'none';
+                    if (historiaPedidoOverlay) historiaPedidoOverlay.style.opacity = '0';
+                    if (historiaCenterContent) historiaCenterContent.style.opacity = '1';
+                    if (historiaPedidoCard) {
+                        historiaPedidoCard.style.backgroundColor = '';
+                        historiaPedidoCard.style.borderColor = '';
+                        historiaPedidoCard.style.boxShadow = '';
+                    }
+                    if (historiaPedidoCaption) historiaPedidoCaption.style.opacity = '1';
+                    if (historiaPedidoImg) historiaPedidoImg.style.borderRadius = '';
+                }
+                return;
+            }
+
+            let initialPosX = 0;
+            if (isMobile) {
+                const marginM = Math.max(vw * 0.03, 10);
+                initialPosX = Math.max(vw - cardW - marginM, marginM);
+            } else {
+                const marginD = Math.min(Math.max(vw * 0.065, 40), 140);
+                initialPosX = vw - cardW - marginD;
+            }
+
+            const centerPosX = (vw - cardW) / 2;
+            const centerPosY = (vh - cardH) / 2;
+            const targetScale = metrics.targetScale;
+            const imgCenterOffsetY = metrics.imgCenterOffsetY;
+
+            let posX = centerPosX;
+            let posY = centerPosY;
+            let rot = 0;
+            let scale = 1.0;
+            let opacity = 1;
+
+            if (progress < pLock) {
+                // FASE 1: Subindo de baixo e deslizando para o centro da tela
+                if (pedidoCurrentState !== 0) {
+                    pedidoCurrentState = 0;
+                    if (historiaPedidoCard) {
+                        historiaPedidoCard.style.backgroundColor = '';
+                        historiaPedidoCard.style.borderColor = '';
+                        historiaPedidoCard.style.boxShadow = '';
+                    }
+                    if (historiaPedidoCaption) historiaPedidoCaption.style.opacity = '1';
+                    if (historiaPedidoImg) historiaPedidoImg.style.borderRadius = '';
+                    if (historiaPedidoOverlay) historiaPedidoOverlay.style.opacity = '0';
+                }
+
+                const tEntry = (progress - pStart) / (pLock - pStart);
+                const easeEntry = Math.sin((tEntry * Math.PI) / 2);
+
+                const startY = vh + 25;
+                posY = startY + (centerPosY - startY) * easeEntry;
+                posX = initialPosX + (centerPosX - initialPosX) * easeEntry;
+                rot = 3.5 * (1 - easeEntry);
+                scale = 1.0;
+                opacity = Math.min(1, tEntry / 0.25);
+
+                if (historiaCenterContent) {
+                    if (tEntry > 0.6) {
+                        historiaCenterContent.style.opacity = (1 - (tEntry - 0.6) / 0.4).toFixed(3);
+                    } else {
+                        historiaCenterContent.style.opacity = '1';
+                    }
+                }
+
+            } else if (progress <= pFull) {
+                // FASE 2: TRAVA NO CENTRO, CRESCE E PREENCHE A TELA
+                const tGrow = (progress - pLock) / (pFull - pLock);
+                const easeGrow = tGrow < 0.5 ? 4 * tGrow * tGrow * tGrow : 1 - Math.pow(-2 * tGrow + 2, 3) / 2;
+
+                if (pedidoCurrentState !== 1) {
+                    pedidoCurrentState = 1;
+                    if (historiaCenterContent) historiaCenterContent.style.opacity = '0';
+                }
+
+                posX = centerPosX;
+                posY = centerPosY - (imgCenterOffsetY * easeGrow);
+                rot = 0;
+                scale = 1.0 + (targetScale - 1.0) * easeGrow;
+                opacity = 1;
+
+                if (historiaPedidoCard) {
+                    historiaPedidoCard.style.backgroundColor = easeGrow > 0.3 ? 'transparent' : '#FFFFFF';
+                    historiaPedidoCard.style.borderColor = easeGrow > 0.15 ? 'transparent' : 'rgba(107, 112, 92, 0.14)';
+                    historiaPedidoCard.style.boxShadow = easeGrow > 0.2 ? 'none' : '';
+                }
+
+                if (historiaPedidoCaption) {
+                    historiaPedidoCaption.style.opacity = Math.max(0, 1 - easeGrow * 3.5).toFixed(3);
+                }
+
+                if (historiaPedidoImg) {
+                    historiaPedidoImg.style.borderRadius = `${Math.max(0, 4 * (1 - easeGrow * 2))}px`;
+                }
+
+                if (historiaPedidoOverlay) {
+                    const oFade = Math.min(1, Math.max(0, (easeGrow - 0.45) / 0.55));
+                    historiaPedidoOverlay.style.opacity = oFade.toFixed(3);
+                }
+
+            } else {
+                // FASE 3: Permanece TRAVADA em TELA CHEIA até a transição para a próxima seção
+                if (pedidoCurrentState !== 2) {
+                    pedidoCurrentState = 2;
+                    if (historiaCenterContent) historiaCenterContent.style.opacity = '0';
+                    if (historiaPedidoCard) {
+                        historiaPedidoCard.style.backgroundColor = 'transparent';
+                        historiaPedidoCard.style.borderColor = 'transparent';
+                        historiaPedidoCard.style.boxShadow = 'none';
+                    }
+                    if (historiaPedidoCaption) historiaPedidoCaption.style.opacity = '0';
+                    if (historiaPedidoImg) historiaPedidoImg.style.borderRadius = '0px';
+                    if (historiaPedidoOverlay) historiaPedidoOverlay.style.opacity = '1';
+                }
+
+                posX = centerPosX;
+                posY = centerPosY - imgCenterOffsetY;
+                rot = 0;
+                scale = targetScale;
+                opacity = 1;
+            }
+
+            pedidoItem.style.opacity = opacity.toFixed(3);
+            pedidoItem.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg) scale(${scale.toFixed(4)})`;
+            pedidoItem.style.pointerEvents = opacity > 0.4 ? 'auto' : 'none';
+            pedidoItem.style.zIndex = progress >= pLock ? '20' : '6';
+        }
+    }
+
+    // ═══════════════════════════════════════
+    // HIGH-PERFORMANCE SCROLL METRICS (ZERO LAYOUT REFLOWS DURING SCROLL)
+    // ═══════════════════════════════════════
+    const metrics = {
+        vw: window.innerWidth,
+        vh: window.innerHeight,
+        isMobile: window.innerWidth <= 768,
+        docH: 1,
+        heroH: 0,
+        stdTop: 0,
+        stdWrapperH: 1,
+        historiaTop: 0,
+        historiaWrapperH: 1,
+        cardsTop: 0,
+        cardsWrapperH: 1,
+        cardW: 240,
+        cardH: 320,
+        imgW: 220,
+        imgH: 275,
+        targetScale: 4.5,
+        imgCenterOffsetY: 0
+    };
+
+    function getElementDocTop(el) {
+        if (!el) return 0;
+        const box = el.getBoundingClientRect();
+        return box.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+    }
+
+    function recalcMetrics() {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const isMobile = vw <= 768;
+
+        metrics.vw = vw;
+        metrics.vh = vh;
+        metrics.isMobile = isMobile;
+        metrics.docH = Math.max(1, document.documentElement.scrollHeight - vh);
+        metrics.heroH = heroEl ? heroEl.offsetHeight : vh;
+
+        if (stdFadeWrapper) {
+            metrics.stdTop = getElementDocTop(stdFadeWrapper);
+            metrics.stdWrapperH = Math.max(1, stdFadeWrapper.offsetHeight - vh);
+        }
+
+        if (historiaPin) {
+            metrics.historiaTop = getElementDocTop(historiaPin);
+            metrics.historiaWrapperH = Math.max(1, historiaPin.offsetHeight - vh);
+        }
+
+        if (cardsPinWrapper) {
+            metrics.cardsTop = getElementDocTop(cardsPinWrapper);
+            metrics.cardsWrapperH = Math.max(1, cardsPinWrapper.offsetHeight - vh);
+        }
+
+        const sampleCard = document.querySelector('.historia-photo-card');
+        metrics.cardW = (sampleCard && sampleCard.offsetWidth > 0) ? sampleCard.offsetWidth : (isMobile ? 180 : 260);
+        metrics.cardH = (sampleCard && sampleCard.offsetHeight > 0) ? sampleCard.offsetHeight : (isMobile ? 240 : 340);
+
+        const sampleImg = document.getElementById('historiaPedidoImg');
+        metrics.imgW = (sampleImg && sampleImg.offsetWidth > 0) ? sampleImg.offsetWidth : (metrics.cardW - 20);
+        metrics.imgH = (sampleImg && sampleImg.offsetHeight > 0) ? sampleImg.offsetHeight : (metrics.cardH - 50);
+        metrics.targetScale = Math.max(vw / metrics.imgW, vh / metrics.imgH) * 1.05;
+        metrics.imgCenterOffsetY = sampleImg ? ((sampleImg.offsetTop + sampleImg.offsetHeight / 2) - (metrics.cardH / 2)) : 0;
+    }
+
+    // Initialize metrics immediately
+    recalcMetrics();
     updateDateCrossfade(0);
     updateCardsCrossfade(0);
+    updateHistoriaPhotos(0);
 
     function onScroll() {
         if (!ticking) {
             requestAnimationFrame(() => {
-                const y = window.scrollY;
-                const vh = window.innerHeight;
-                const isMobile = window.innerWidth <= 768;
-                const docH = document.documentElement.scrollHeight - vh;
+                const y = window.pageYOffset || window.scrollY || 0;
+                const vh = metrics.vh;
+                const isMobile = metrics.isMobile;
                 
-                // Progress Bar
-                if (progressBar && docH > 0) {
-                    progressBar.style.width = ((y / docH) * 100) + '%';
+                // Progress Bar (Zero forced reflow)
+                if (progressBar && metrics.docH > 0) {
+                    progressBar.style.width = ((y / metrics.docH) * 100) + '%';
                 }
 
                 // Header Pinned
                 if (hdr) hdr.classList.toggle('pinned', y > 80);
 
-                // Parallax Hero & Rising Cloud Cover ("Nuvens subindo e tampando a Hero")
-                const heroH = heroEl ? heroEl.offsetHeight : vh;
-                if (y <= heroH + 200) {
-
-                    // ☁️ RISING CLOUD COVER:
-                    // At y = 0: clouds rest at bottom of viewport (below scroll cue, framing hero)
-                    // As user scrolls: clouds climb smoothly up over date, line, and names ("escondendo a hero")
-                    // At scroll end: hero is completely enveloped, and Save the Date appears right away
+                // Parallax Hero & Rising Cloud Cover
+                if (y <= metrics.heroH + 200) {
                     const scrollDist = vh * (isMobile ? 0.48 : 0.52);
                     const progress = Math.min(Math.max(y / scrollDist, 0), 1);
                     const eased = progress * progress * (3 - 2 * progress);
@@ -4507,7 +4810,6 @@
                         cloudsCover.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`;
                     }
 
-                    // Content gently floats and fades as clouds climb over it
                     if (heroContent) {
                         const translateY = y * 0.18;
                         const opacity = Math.max(0, 1 - (progress * 1.4));
@@ -4515,12 +4817,10 @@
                         heroContent.style.opacity = opacity.toFixed(3);
                     }
 
-                    // Ambient Background
                     if (heroBg) {
                         heroBg.style.transform = `translate3d(0, ${(y * 0.08).toFixed(1)}px, 0)`;
                     }
 
-                    // Botanical branches
                     if (branchL) {
                         const factorL = y * 0.14;
                         branchL.style.transform = `translate3d(0, ${(-factorL).toFixed(1)}px, 0) rotate(${(y * -0.015).toFixed(1)}deg)`;
@@ -4530,64 +4830,37 @@
                         branchR.style.transform = `scaleX(-1) translate3d(0, ${(-factorR).toFixed(1)}px, 0) rotate(${(y * 0.015).toFixed(1)}deg)`;
                     }
 
-                    // Scroll cue fades fast on initial scroll
                     if (scrollCue) {
                         scrollCue.style.opacity = Math.max(0, 1 - (y / 90)).toFixed(2);
                     }
 
-                    // Multi-plane parallax within the rising cloud bank
-                    if (coverCloudFront) {
-                        coverCloudFront.style.transform = `translate3d(0, ${(y * -0.06).toFixed(1)}px, 0)`;
-                    }
-                    if (coverCloudMid) {
-                        coverCloudMid.style.transform = `translate3d(0, ${(y * -0.03).toFixed(1)}px, 0)`;
-                    }
-                    if (coverCloudBack) {
-                        coverCloudBack.style.transform = 'translate3d(0, 0, 0)';
+                    // Multi-plane parallax within the rising cloud bank (Desktop only to protect mobile GPU)
+                    if (!isMobile) {
+                        if (coverCloudFront) {
+                            coverCloudFront.style.transform = `translate3d(0, ${(y * -0.06).toFixed(1)}px, 0)`;
+                        }
+                        if (coverCloudMid) {
+                            coverCloudMid.style.transform = `translate3d(0, ${(y * -0.03).toFixed(1)}px, 0)`;
+                        }
                     }
                 }
 
-                // Pin-Scroll Crossfade Handling (Save the Date -> A Data)
+                // Pin-Scroll Crossfade Handling (Save the Date -> A Data) (Zero forced reflow)
                 if (stdFadeWrapper) {
-                    const rect = stdFadeWrapper.getBoundingClientRect();
-                    const wrapperH = stdFadeWrapper.offsetHeight - window.innerHeight;
-                    
-                    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-                        const progress = Math.min(Math.max(-rect.top / wrapperH, 0), 1);
-                        updateDateCrossfade(progress);
-                    } else if (rect.top > 0) {
-                        updateDateCrossfade(0);
-                    } else if (rect.bottom < window.innerHeight) {
-                        updateDateCrossfade(1);
-                    }
+                    const stdProgress = Math.min(Math.max((y - metrics.stdTop) / metrics.stdWrapperH, 0), 1);
+                    updateDateCrossfade(stdProgress);
                 }
 
-                // Pinned Nossa História — 7 Floating Memories Scroll Controller
+                // Pinned Nossa História — 7 Floating Memories Scroll Controller (Zero forced reflow)
                 if (historiaPin) {
-                    const hRect = historiaPin.getBoundingClientRect();
-                    const hWrapperH = historiaPin.offsetHeight - window.innerHeight;
-                    if (hRect.top <= 0 && hRect.bottom >= window.innerHeight) {
-                        const hProgress = Math.min(Math.max(-hRect.top / hWrapperH, 0), 1);
-                        updateHistoriaPhotos(hProgress);
-                    } else if (hRect.top > 0) {
-                        updateHistoriaPhotos(0);
-                    } else if (hRect.bottom < window.innerHeight) {
-                        updateHistoriaPhotos(1);
-                    }
+                    const hProgress = Math.min(Math.max((y - metrics.historiaTop) / metrics.historiaWrapperH, 0), 1);
+                    updateHistoriaPhotos(hProgress);
                 }
 
-                // Pinned Horizontal Cards Section (Confirmar Presença, Cerimônia, Presentes)
+                // Pinned Horizontal Cards Section (Zero forced reflow)
                 if (cardsPinWrapper) {
-                    const cRect = cardsPinWrapper.getBoundingClientRect();
-                    const cWrapperH = cardsPinWrapper.offsetHeight - window.innerHeight;
-                    if (cRect.top <= 0 && cRect.bottom >= window.innerHeight) {
-                        const cProgress = Math.min(Math.max(-cRect.top / cWrapperH, 0), 1);
-                        updateCardsCrossfade(cProgress);
-                    } else if (cRect.top > 0) {
-                        updateCardsCrossfade(0);
-                    } else if (cRect.bottom < window.innerHeight) {
-                        updateCardsCrossfade(1);
-                    }
+                    const cProgress = Math.min(Math.max((y - metrics.cardsTop) / metrics.cardsWrapperH, 0), 1);
+                    updateCardsCrossfade(cProgress);
                 }
 
                 ticking = false;
@@ -4596,9 +4869,29 @@
         }
     }
 
-
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+
+    // Intelligent resize listener: ignores mobile address-bar small jitter
+    let lastW = window.innerWidth;
+    let lastH = window.innerHeight;
+    window.addEventListener('resize', () => {
+        const curW = window.innerWidth;
+        const curH = window.innerHeight;
+        if (Math.abs(curW - lastW) > 10 || Math.abs(curH - lastH) > 120) {
+            lastW = curW;
+            lastH = curH;
+            recalcMetrics();
+            onScroll();
+        }
+    }, { passive: true });
+
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            recalcMetrics();
+            onScroll();
+        }, 150);
+    }, { passive: true });
+
     onScroll();
 
     /* ── Scroll reveal ── */
@@ -4662,245 +4955,6 @@
     });
 
     /* ═══════════════════════════════════════
-       NOSSA HISTÓRIA — PINNED MEMORIES CONTROLLER (ALTERNATING LATERAL MEMORIES + O PEDIDO FULLSCREEN CLIMAX)
-    ═══════════════════════════════════════ */
-    const historiaPin = document.getElementById('historia');
-    const photoItems = document.querySelectorAll('.historia-photo-item');
-    const historiaCenterContent = document.querySelector('.historia-center-content');
-    const historiaPedidoOverlay = document.getElementById('historiaPedidoOverlay');
-    const historiaPedidoItem = document.getElementById('historiaPedidoItem');
-    const historiaPedidoCard = document.getElementById('historiaPedidoCard');
-    const historiaPedidoImg = document.getElementById('historiaPedidoImg');
-    const historiaPedidoCaption = document.getElementById('historiaPedidoCaption');
-
-    // 6 Primeiras fotos alternando lateralmente (Direita -> Esquerda ...)
-    const historiaStandardEpisodes = [
-        // 01 • Primeira foto (Direita)
-        { side: 'right', startProgress: 0.01, endProgress: 0.18, rot: 3.5 },
-        // 02 • 2020 (Esquerda)
-        { side: 'left',  startProgress: 0.08, endProgress: 0.25, rot: -3.5 },
-        // 03 • 2021 (Direita)
-        { side: 'right', startProgress: 0.15, endProgress: 0.32, rot: 3.0 },
-        // 04 • 2022 (Esquerda)
-        { side: 'left',  startProgress: 0.22, endProgress: 0.39, rot: -3.0 },
-        // 05 • 2023 (Direita)
-        { side: 'right', startProgress: 0.29, endProgress: 0.46, rot: 2.5 },
-        // 06 • 2024 (Esquerda)
-        { side: 'left',  startProgress: 0.36, endProgress: 0.53, rot: -3.0 }
-    ];
-
-    function updateHistoriaPhotos(progress) {
-        if (!photoItems.length) return;
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const isMobile = vw <= 768;
-
-        // 1. ATUALIZA AS 6 FOTOS INICIAIS (0 a 5)
-        historiaStandardEpisodes.forEach((episode, idx) => {
-            const item = photoItems[idx];
-            if (!item) return;
-
-            if (progress < episode.startProgress || progress > episode.endProgress) {
-                item.style.opacity = '0';
-                item.style.pointerEvents = 'none';
-                return;
-            }
-
-            // Progresso local da foto de 0 a 1 durante sua janela de subida
-            const t = (progress - episode.startProgress) / (episode.endProgress - episode.startProgress);
-
-            const cardEl = item.querySelector('.historia-photo-card');
-            const cardW = (cardEl && cardEl.offsetWidth > 0) ? cardEl.offsetWidth : (isMobile ? 180 : 260);
-            const cardH = (cardEl && cardEl.offsetHeight > 0) ? cardEl.offsetHeight : (isMobile ? 240 : 340);
-
-            let posX = 0;
-            if (isMobile) {
-                const marginM = Math.max(vw * 0.03, 10);
-                posX = episode.side === 'left' ? marginM : Math.max(vw - cardW - marginM, marginM);
-            } else {
-                const marginD = Math.min(Math.max(vw * 0.065, 40), 140);
-                posX = episode.side === 'left' ? marginD : (vw - cardW - marginD);
-            }
-
-            const startY = vh + 25;
-            const endY = -cardH - 30;
-            const posY = startY + (endY - startY) * t;
-
-            let opacity = 1;
-            if (t < 0.15) {
-                opacity = t / 0.15;
-            } else if (t > 0.85) {
-                opacity = (1 - t) / 0.15;
-            }
-
-            item.style.opacity = opacity.toFixed(3);
-            item.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) rotate(${episode.rot.toFixed(1)}deg)`;
-            item.style.pointerEvents = opacity > 0.4 ? 'auto' : 'none';
-        });
-
-        // 2. ATUALIZA A 7ª FOTO: O PEDIDO (TRAVA, CRESCE E PREENCHE A TELA)
-        const pedidoItem = historiaPedidoItem || photoItems[6];
-        if (pedidoItem) {
-            const pStart = 0.44;  // Começa a subir
-            const pLock  = 0.62;  // Atinge o centro e trava
-            const pFull  = 0.82;  // Conclui expansão em tela cheia (100% preenchida)
-            const pEnd   = 1.00;  // Permanece travada em tela cheia
-
-            if (progress < pStart) {
-                pedidoItem.style.opacity = '0';
-                pedidoItem.style.pointerEvents = 'none';
-                if (historiaPedidoOverlay) historiaPedidoOverlay.style.opacity = '0';
-                if (historiaCenterContent) historiaCenterContent.style.opacity = '1';
-                if (historiaPedidoCard) {
-                    historiaPedidoCard.style.backgroundColor = '';
-                    historiaPedidoCard.style.borderColor = '';
-                    historiaPedidoCard.style.boxShadow = '';
-                    historiaPedidoCard.style.padding = '';
-                }
-                if (historiaPedidoCaption) historiaPedidoCaption.style.opacity = '1';
-                if (historiaPedidoImg) historiaPedidoImg.style.borderRadius = '';
-                return;
-            }
-
-            const cardW = (historiaPedidoCard && historiaPedidoCard.offsetWidth > 0) ? historiaPedidoCard.offsetWidth : (isMobile ? 180 : 260);
-            const cardH = (historiaPedidoCard && historiaPedidoCard.offsetHeight > 0) ? historiaPedidoCard.offsetHeight : (isMobile ? 240 : 340);
-
-            let initialPosX = 0;
-            if (isMobile) {
-                const marginM = Math.max(vw * 0.03, 10);
-                initialPosX = Math.max(vw - cardW - marginM, marginM);
-            } else {
-                const marginD = Math.min(Math.max(vw * 0.065, 40), 140);
-                initialPosX = vw - cardW - marginD;
-            }
-
-            const centerPosX = (vw - cardW) / 2;
-            const centerPosY = (vh - cardH) / 2;
-
-            const imgW = (historiaPedidoImg && historiaPedidoImg.offsetWidth > 0) ? historiaPedidoImg.offsetWidth : (cardW - 20);
-            const imgH = (historiaPedidoImg && historiaPedidoImg.offsetHeight > 0) ? historiaPedidoImg.offsetHeight : (cardH - 50);
-            const targetScale = Math.max(vw / imgW, vh / imgH) * 1.05;
-
-            const imgCenterOffsetY = historiaPedidoImg ? ((historiaPedidoImg.offsetTop + historiaPedidoImg.offsetHeight / 2) - (cardH / 2)) : 0;
-
-            let posX = centerPosX;
-            let posY = centerPosY;
-            let rot = 0;
-            let scale = 1.0;
-            let opacity = 1;
-
-            if (progress < pLock) {
-                // FASE 1: Subindo de baixo e deslizando para o centro da tela
-                const tEntry = (progress - pStart) / (pLock - pStart);
-                const easeEntry = Math.sin((tEntry * Math.PI) / 2);
-
-                const startY = vh + 25;
-                posY = startY + (centerPosY - startY) * easeEntry;
-                posX = initialPosX + (centerPosX - initialPosX) * easeEntry;
-                rot = 3.5 * (1 - easeEntry);
-                scale = 1.0;
-                opacity = Math.min(1, tEntry / 0.25);
-
-                if (historiaCenterContent) {
-                    if (tEntry > 0.6) {
-                        historiaCenterContent.style.opacity = (1 - (tEntry - 0.6) / 0.4).toFixed(3);
-                    } else {
-                        historiaCenterContent.style.opacity = '1';
-                    }
-                }
-
-                if (historiaPedidoCard) {
-                    historiaPedidoCard.style.backgroundColor = '';
-                    historiaPedidoCard.style.borderColor = '';
-                    historiaPedidoCard.style.boxShadow = '';
-                    historiaPedidoCard.style.padding = '';
-                }
-                if (historiaPedidoCaption) historiaPedidoCaption.style.opacity = '1';
-                if (historiaPedidoImg) historiaPedidoImg.style.borderRadius = '';
-                if (historiaPedidoOverlay) historiaPedidoOverlay.style.opacity = '0';
-
-            } else if (progress <= pFull) {
-                // FASE 2: TRAVA NO CENTRO, CRESCE E PREENCHE A TELA
-                const tGrow = (progress - pLock) / (pFull - pLock);
-                const easeGrow = tGrow < 0.5 ? 4 * tGrow * tGrow * tGrow : 1 - Math.pow(-2 * tGrow + 2, 3) / 2;
-
-                posX = centerPosX;
-                posY = centerPosY - (imgCenterOffsetY * easeGrow);
-                rot = 0;
-                scale = 1.0 + (targetScale - 1.0) * easeGrow;
-                opacity = 1;
-
-                if (historiaCenterContent) {
-                    historiaCenterContent.style.opacity = '0';
-                }
-
-                if (historiaPedidoCard) {
-                    historiaPedidoCard.style.backgroundColor = easeGrow > 0.3 ? 'transparent' : '#FFFFFF';
-                    historiaPedidoCard.style.borderColor = easeGrow > 0.15 ? 'transparent' : 'rgba(107, 112, 92, 0.14)';
-                    historiaPedidoCard.style.boxShadow = easeGrow > 0.2 ? 'none' : '';
-                    if (easeGrow > 0.2) {
-                        const padRatio = Math.max(0, 1 - (easeGrow - 0.2) / 0.5);
-                        historiaPedidoCard.style.padding = `${padRatio * 10}px`;
-                    } else {
-                        historiaPedidoCard.style.padding = '';
-                    }
-                }
-
-                if (historiaPedidoCaption) {
-                    historiaPedidoCaption.style.opacity = Math.max(0, 1 - easeGrow * 3.5).toFixed(3);
-                }
-
-                if (historiaPedidoImg) {
-                    historiaPedidoImg.style.borderRadius = `${Math.max(0, 4 * (1 - easeGrow * 2))}px`;
-                }
-
-                if (historiaPedidoOverlay) {
-                    const oFade = Math.min(1, Math.max(0, (easeGrow - 0.45) / 0.55));
-                    historiaPedidoOverlay.style.opacity = oFade.toFixed(3);
-                }
-
-            } else {
-                // FASE 3: Permanece TRAVADA em TELA CHEIA até a transição para a próxima seção
-                posX = centerPosX;
-                posY = centerPosY - imgCenterOffsetY;
-                rot = 0;
-                scale = targetScale;
-                opacity = 1;
-
-                if (historiaCenterContent) {
-                    historiaCenterContent.style.opacity = '0';
-                }
-
-                if (historiaPedidoCard) {
-                    historiaPedidoCard.style.backgroundColor = 'transparent';
-                    historiaPedidoCard.style.borderColor = 'transparent';
-                    historiaPedidoCard.style.boxShadow = 'none';
-                    historiaPedidoCard.style.padding = '0';
-                }
-
-                if (historiaPedidoCaption) {
-                    historiaPedidoCaption.style.opacity = '0';
-                }
-
-                if (historiaPedidoImg) {
-                    historiaPedidoImg.style.borderRadius = '0px';
-                }
-
-                if (historiaPedidoOverlay) {
-                    historiaPedidoOverlay.style.opacity = '1';
-                }
-            }
-
-            pedidoItem.style.opacity = opacity.toFixed(3);
-            pedidoItem.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg) scale(${scale.toFixed(4)})`;
-            pedidoItem.style.pointerEvents = opacity > 0.4 ? 'auto' : 'none';
-            pedidoItem.style.zIndex = progress >= pLock ? '20' : '6';
-        }
-    }
-
-    updateHistoriaPhotos(0);
-
-    /* ═══════════════════════════════════════
        HERO FULLSCREEN PHOTO SLIDESHOW CONTROLLER (100% GAPLESS)
     ═══════════════════════════════════════ */
     (function initHeroSlider() {
@@ -4942,15 +4996,14 @@
             }
             nextSlide.classList.add('is-incoming');
 
-            // Força reflow no DOM para garantir que a transição seja computada
-            void nextSlide.offsetHeight;
-
-            // Anima próximo slide suavemente por cima (Slide anterior continua 100% visível embaixo)
+            // Anima próximo slide suavemente sem forçar reflow no DOM
             requestAnimationFrame(() => {
-                if (nextImg) {
-                    nextImg.style.transition = ''; // restaura animação suave de zoom
-                }
-                nextSlide.classList.add('fade-in');
+                requestAnimationFrame(() => {
+                    if (nextImg) {
+                        nextImg.style.transition = ''; // restaura animação suave de zoom
+                    }
+                    nextSlide.classList.add('fade-in');
+                });
             });
 
             // Após o término do crossfade (1900ms):
@@ -4983,6 +5036,7 @@
 
         function stopAutoplay() {
             if (slideTimer) clearInterval(slideTimer);
+            slideTimer = null;
         }
 
         dots.forEach((dot, idx) => {
@@ -5010,9 +5064,25 @@
                     startAutoplay();
                 }
             }, { passive: true });
-        }
 
-        startAutoplay();
+            // Economiza bateria e GPU no mobile pausando o slider quando a hero sai da tela
+            if ('IntersectionObserver' in window) {
+                const heroObs = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            startAutoplay();
+                        } else {
+                            stopAutoplay();
+                        }
+                    });
+                }, { threshold: 0.05 });
+                heroObs.observe(heroEl);
+            } else {
+                startAutoplay();
+            }
+        } else {
+            startAutoplay();
+        }
     })();
 
     /* ═══════════════════════════════════════
