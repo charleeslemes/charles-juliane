@@ -1154,7 +1154,7 @@
         .cards-fade-layer {
             position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
             padding: 2rem var(--px); opacity: 0; pointer-events: none; will-change: opacity, transform;
-            transition: opacity 0.3s ease-out, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: none !important;
         }
         .cards-fade-layer.active { pointer-events: auto; }
 
@@ -4256,17 +4256,6 @@
         document.getElementById('card-layer-4')
     ];
 
-    const cardRanges = [
-        // Card 1: Confirmar Presença (Starts centered, holds, slides left)
-        { start: 0.00, fadeInEnd: 0.00, fadeOutStart: 0.16, end: 0.25 },
-        // Card 2: A Cerimônia (Slides in, holds, slides left)
-        { start: 0.22, fadeInEnd: 0.31, fadeOutStart: 0.44, end: 0.53 },
-        // Card 3: Lista de Presentes (Slides in, holds, slides left)
-        { start: 0.50, fadeInEnd: 0.59, fadeOutStart: 0.72, end: 0.81 },
-        // Card 4: Dress Code (Slides in, holds centered)
-        { start: 0.78, fadeInEnd: 0.87, fadeOutStart: 1.00, end: 1.00 }
-    ];
-
     /* ── Update Date Dissolution & Materialization (Save the Date -> A Data) ── */
     function updateDateCrossfade(progress) {
         const isMobile = metrics.isMobile;
@@ -4435,84 +4424,51 @@
         }
     }
 
-    /* ── Update Horizontal Editorial Cards (Confirmar Presença, Cerimônia, Presentes, Dress Code) ── */
+    /* ── Update Horizontal Editorial Cards (Continuous Fluid Scroll Transition) ── */
     function updateCardsCrossfade(progress) {
         const vw = window.innerWidth || 1200;
-        const cardTravelX = Math.max(vw * 1.05, 480);
         const totalCards = cardLayers.length;
+        if (!totalCards) return;
+
+        // Travel distance: cards slide smoothly across the viewport
+        const cardTravelX = Math.max(vw * 0.85, 420);
+
+        // Smooth continuous progress from 0.0 to 3.0 (for 4 cards)
+        // With a tiny 2% cushion at the absolute edges for clean entry and exit
+        const effectiveProgress = Math.min(Math.max((progress - 0.02) / 0.96, 0), 1);
+        const cardPos = effectiveProgress * (totalCards - 1);
 
         for (let idx = 0; idx < totalCards; idx++) {
             const layer = cardLayers[idx];
             if (!layer) continue;
-            const r = cardRanges[idx];
-            if (!r) continue;
 
-            let opacity = 0;
-            let translateX = 0;
-            let scale = 1;
+            const delta = idx - cardPos;
+            const absDelta = Math.abs(delta);
 
-            if (idx === 0) {
-                // First card starts directly centered
-                if (progress <= r.fadeOutStart) {
-                    opacity = 1;
-                    translateX = 0;
-                    scale = 1;
-                } else if (progress > r.fadeOutStart && progress <= r.end) {
-                    const norm = Math.max(0, Math.min(1, (progress - r.fadeOutStart) / (r.end - r.fadeOutStart || 0.01)));
-                    opacity = Math.max(0, 1 - norm);
-                    translateX = -norm * cardTravelX;
-                    scale = 1 - (norm * 0.04);
-                } else {
-                    opacity = 0;
-                    translateX = -cardTravelX;
-                    scale = 0.96;
-                }
-            } else if (idx === totalCards - 1) {
-                // Last card slides in from right and remains centered
-                if (progress < r.start) {
-                    opacity = 0;
-                    translateX = cardTravelX;
-                    scale = 0.96;
-                } else if (progress >= r.start && progress < r.fadeInEnd) {
-                    const norm = Math.max(0, Math.min(1, (progress - r.start) / (r.fadeInEnd - r.start || 0.01)));
-                    opacity = norm;
-                    translateX = (1 - norm) * cardTravelX;
-                    scale = 0.96 + (norm * 0.04);
-                } else {
-                    opacity = 1;
-                    translateX = 0;
-                    scale = 1;
-                }
-            } else {
-                // Middle cards slide in from right, hold centered, slide out left
-                if (progress < r.start) {
-                    opacity = 0;
-                    translateX = cardTravelX;
-                    scale = 0.96;
-                } else if (progress >= r.start && progress < r.fadeInEnd) {
-                    const norm = Math.max(0, Math.min(1, (progress - r.start) / (r.fadeInEnd - r.start || 0.01)));
-                    opacity = norm;
-                    translateX = (1 - norm) * cardTravelX;
-                    scale = 0.96 + (norm * 0.04);
-                } else if (progress >= r.fadeInEnd && progress <= r.fadeOutStart) {
-                    opacity = 1;
-                    translateX = 0;
-                    scale = 1;
-                } else if (progress > r.fadeOutStart && progress <= r.end) {
-                    const norm = Math.max(0, Math.min(1, (progress - r.fadeOutStart) / (r.end - r.fadeOutStart || 0.01)));
-                    opacity = Math.max(0, 1 - norm);
-                    translateX = -norm * cardTravelX;
-                    scale = 1 - (norm * 0.04);
-                } else {
-                    opacity = 0;
-                    translateX = -cardTravelX;
-                    scale = 0.96;
-                }
+            if (absDelta >= 1.05) {
+                // Card is completely offscreen
+                layer.style.opacity = '0';
+                layer.style.transform = `translate3d(${(Math.sign(delta) * cardTravelX).toFixed(1)}px, 0, 0) scale(0.95)`;
+                layer.style.pointerEvents = 'none';
+                layer.classList.remove('active');
+                continue;
             }
+
+            // Continuous fluid horizontal position (moves directly with scroll)
+            const translateX = delta * cardTravelX;
+
+            // Organic smooth cosine curve: 1.0 when centered (delta=0), smoothly drops to 0 at |delta| = 1
+            const cosVal = Math.cos(delta * (Math.PI / 2));
+            const opacity = Math.max(0, cosVal);
+            const scale = 0.96 + (0.04 * cosVal);
 
             layer.style.opacity = opacity.toFixed(3);
             layer.style.transform = `translate3d(${translateX.toFixed(1)}px, 0, 0) scale(${scale.toFixed(3)})`;
-            layer.classList.toggle('active', opacity > 0.3);
+
+            // Active & interactive when close to center
+            const isInteractive = absDelta < 0.35;
+            layer.style.pointerEvents = isInteractive ? 'auto' : 'none';
+            layer.classList.toggle('active', isInteractive);
         }
     }
 
@@ -5413,7 +5369,7 @@
                 setTimeout(() => {
                     const pinTop = window.pageYOffset + cardsPinWrapper.getBoundingClientRect().top;
                     const totalScroll = cardsPinWrapper.offsetHeight - window.innerHeight;
-                    const cardProgressMap = { '1': 0.05, '2': 0.36, '3': 0.65, '4': 0.92 };
+                    const cardProgressMap = { '1': 0.02, '2': 0.34, '3': 0.66, '4': 0.98 };
                     const progressTarget = cardProgressMap[cardNum] !== undefined ? cardProgressMap[cardNum] : 0;
                     const targetY = pinTop + (progressTarget * totalScroll);
                     window.scrollTo({ top: targetY, behavior: 'smooth' });
