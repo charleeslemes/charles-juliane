@@ -991,47 +991,55 @@
         }
 
         @media (max-width: 768px) {
+            /* Remove fake white gradient bar to keep hero photos crisp and let real clouds billow over them */
             .hero-slider::after {
-                content: '';
-                position: absolute;
-                left: 0; right: 0; bottom: 0;
-                height: 32vh;
-                background: linear-gradient(to bottom,
-                    transparent 0%,
-                    rgba(255, 255, 255, 0.35) 30%,
-                    rgba(255, 255, 255, 0.88) 65%,
-                    #FFFFFF 90%,
-                    #FFFFFF 100%
-                );
-                z-index: 3;
-                pointer-events: none;
+                display: none !important;
             }
 
             .clouds-cover-wrapper {
-                transform: translate3d(0, 74vh, 0);
+                transform: translate3d(0, 82vh, 0);
             }
-            .cloud-cover-base {
-                top: 8vh;
-                background: linear-gradient(to bottom,
-                    transparent 0%,
-                    rgba(255,255,255,0.7) 4vh,
-                    rgba(255,255,255,0.98) 8vh,
-                    #FFFFFF 12vh,
-                    #FFFFFF 100%
-                );
-            }
-            /* Desativa keyframes infinitos e camadas redundantes nas nuvens no mobile para economizar ~60MB de VRAM */
+
+            /* Natural organic feathered edges for mobile cloud puffs */
             .cloud-puff img {
                 animation: none !important;
                 will-change: auto !important;
+                filter: brightness(1.05) contrast(1.02);
+                -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 30%, rgba(0,0,0,0.85) 65%, transparent 100%);
+                mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 30%, rgba(0,0,0,0.85) 65%, transparent 100%);
             }
-            .cloud-puff--b3, .cloud-puff--b4, .cloud-puff--b5,
-            .cloud-puff--m3, .cloud-puff--m4, .cloud-puff--m5 {
-                display: none !important;
+
+            /* ☁️ Realistic, voluminous cloud billow arrangements for mobile */
+            /* Back Plane: deep high atmospheric billows */
+            .cloud-puff--b1 { width: 125vw !important; left: -22vw !important; top: -1vh !important; opacity: 0.85 !important; }
+            .cloud-puff--b2 { width: 130vw !important; right: -25vw !important; top: 0 !important; opacity: 0.88 !important; transform: scaleX(-1) !important; }
+            .cloud-puff--b3 { width: 115vw !important; left: -8vw !important; top: -2vh !important; opacity: 0.84 !important; }
+            .cloud-puff--b4, .cloud-puff--b5 { display: none !important; }
+
+            /* Mid Plane: voluminous rolling cloud crests */
+            .cloud-puff--m1 { width: 115vw !important; left: -16vw !important; top: 4vh !important; opacity: 0.92 !important; }
+            .cloud-puff--m2 { width: 120vw !important; right: -18vw !important; top: 5vh !important; opacity: 0.94 !important; transform: scaleX(-1) !important; }
+            .cloud-puff--m3 { width: 110vw !important; left: 0vw !important; top: 6vh !important; opacity: 0.90 !important; }
+            .cloud-puff--m4, .cloud-puff--m5 { display: none !important; }
+
+            /* Front Plane: fluffy foreground cloud billows */
+            .cloud-puff--f1 { width: 105vw !important; left: -18vw !important; top: 9vh !important; opacity: 0.98 !important; }
+            .cloud-puff--f2 { width: 110vw !important; right: -20vw !important; top: 10vh !important; opacity: 0.98 !important; transform: scaleX(-1) !important; }
+            .cloud-puff--f3 { width: 105vw !important; left: -2vw !important; top: 11vh !important; opacity: 0.98 !important; }
+            .cloud-puff--f4, .cloud-puff--f5 { display: none !important; }
+
+            /* Seamless pure white fog base starting softly below the puffy cloud crests */
+            .cloud-cover-base {
+                top: 18vh !important;
+                background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(255,255,255,0.4) 3vh,
+                    rgba(255,255,255,0.85) 7vh,
+                    rgba(255,255,255,0.98) 12vh,
+                    #FFFFFF 16vh,
+                    #FFFFFF 100%
+                ) !important;
             }
-            .cloud-puff--b1, .cloud-puff--b2 { width: 98vw; }
-            .cloud-puff--m1, .cloud-puff--m2 { width: 94vw; }
-            .cloud-puff--f1, .cloud-puff--f2, .cloud-puff--f3, .cloud-puff--f4, .cloud-puff--f5 { width: 90vw; }
 
             /* Altura estável no mobile (evita pulo ao recolher a barra de endereços no Chrome/Brave) */
             .hero {
@@ -4818,43 +4826,79 @@
 
                 // Parallax Hero & Rising Cloud Cover
                 if (y <= metrics.heroH + 200) {
-                    const scrollDist = vh * (isMobile ? 0.85 : 0.52);
-                    const progress = Math.min(Math.max(y / scrollDist, 0), 1);
-                    const eased = progress * progress * (3 - 2 * progress);
+                    if (isMobile) {
+                        // 📱 MOBILE TACTILE TOUCH: 1:1 NATURAL TOUCH RESPONSE (NO ACCELERATION/SLIPPING)
+                        const scrollDist = vh * 0.88;
+                        const progress = Math.min(Math.max(y / scrollDist, 0), 1);
 
-                    if (cloudsCover) {
-                        const startTop = vh * (isMobile ? 0.74 : 0.70);
-                        const endTop = -vh * 0.18;
-                        const currentY = startTop + (endTop - startTop) * eased;
-                        cloudsCover.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`;
-                    }
+                        if (cloudsCover) {
+                            const startTop = vh * 0.82;
+                            const endTop = vh * 0.65;
+                            const currentY = startTop + (endTop - startTop) * progress;
+                            cloudsCover.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`;
+                        }
 
-                    if (heroContent) {
-                        const translateY = y * (isMobile ? 0.14 : 0.18);
-                        const opacity = Math.max(0, 1 - (progress * (isMobile ? 1.15 : 1.4)));
-                        heroContent.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
-                        heroContent.style.opacity = opacity.toFixed(3);
-                    }
+                        if (heroContent) {
+                            const translateY = y * 0.12;
+                            const opacity = Math.max(0, 1 - (progress * 1.25));
+                            heroContent.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+                            heroContent.style.opacity = opacity.toFixed(3);
+                        }
 
-                    if (heroBg) {
-                        heroBg.style.transform = `translate3d(0, ${(y * 0.08).toFixed(1)}px, 0)`;
-                    }
+                        if (heroBg) {
+                            heroBg.style.transform = `translate3d(0, ${(y * 0.05).toFixed(1)}px, 0)`;
+                        }
 
-                    if (branchL) {
-                        const factorL = y * 0.14;
-                        branchL.style.transform = `translate3d(0, ${(-factorL).toFixed(1)}px, 0) rotate(${(y * -0.015).toFixed(1)}deg)`;
-                    }
-                    if (branchR) {
-                        const factorR = y * 0.10;
-                        branchR.style.transform = `scaleX(-1) translate3d(0, ${(-factorR).toFixed(1)}px, 0) rotate(${(y * 0.015).toFixed(1)}deg)`;
-                    }
+                        if (branchL) {
+                            const factorL = y * 0.10;
+                            branchL.style.transform = `translate3d(0, ${(-factorL).toFixed(1)}px, 0) rotate(${(y * -0.01).toFixed(1)}deg)`;
+                        }
+                        if (branchR) {
+                            const factorR = y * 0.08;
+                            branchR.style.transform = `scaleX(-1) translate3d(0, ${(-factorR).toFixed(1)}px, 0) rotate(${(y * 0.01).toFixed(1)}deg)`;
+                        }
 
-                    if (scrollCue) {
-                        scrollCue.style.opacity = Math.max(0, 1 - (y / 90)).toFixed(2);
-                    }
+                        if (scrollCue) {
+                            scrollCue.style.opacity = Math.max(0, 1 - (y / 90)).toFixed(2);
+                        }
+                    } else {
+                        // 🖥️ DESKTOP: 100% UNTOUCHED ORIGINAL SMOOTH WHEEL PARALLAX
+                        const scrollDist = vh * 0.52;
+                        const progress = Math.min(Math.max(y / scrollDist, 0), 1);
+                        const eased = progress * progress * (3 - 2 * progress);
 
-                    // Multi-plane parallax within the rising cloud bank (Desktop only to protect mobile GPU)
-                    if (!isMobile) {
+                        if (cloudsCover) {
+                            const startTop = vh * 0.70;
+                            const endTop = -vh * 0.18;
+                            const currentY = startTop + (endTop - startTop) * eased;
+                            cloudsCover.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`;
+                        }
+
+                        if (heroContent) {
+                            const translateY = y * 0.18;
+                            const opacity = Math.max(0, 1 - (progress * 1.4));
+                            heroContent.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+                            heroContent.style.opacity = opacity.toFixed(3);
+                        }
+
+                        if (heroBg) {
+                            heroBg.style.transform = `translate3d(0, ${(y * 0.08).toFixed(1)}px, 0)`;
+                        }
+
+                        if (branchL) {
+                            const factorL = y * 0.14;
+                            branchL.style.transform = `translate3d(0, ${(-factorL).toFixed(1)}px, 0) rotate(${(y * -0.015).toFixed(1)}deg)`;
+                        }
+                        if (branchR) {
+                            const factorR = y * 0.10;
+                            branchR.style.transform = `scaleX(-1) translate3d(0, ${(-factorR).toFixed(1)}px, 0) rotate(${(y * 0.015).toFixed(1)}deg)`;
+                        }
+
+                        if (scrollCue) {
+                            scrollCue.style.opacity = Math.max(0, 1 - (y / 90)).toFixed(2);
+                        }
+
+                        // Multi-plane parallax within the rising cloud bank (Desktop only to protect mobile GPU)
                         if (coverCloudFront) {
                             coverCloudFront.style.transform = `translate3d(0, ${(y * -0.06).toFixed(1)}px, 0)`;
                         }
